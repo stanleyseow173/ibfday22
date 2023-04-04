@@ -1,10 +1,14 @@
 package sg.edu.nus.IBF_paf_day22.model;
 
+import java.io.StringReader;
+
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 
 import jakarta.json.Json;
+import jakarta.json.JsonObject;
+import jakarta.json.JsonReader;
 import jakarta.json.JsonValue;
 
 public class RSVP {
@@ -73,6 +77,22 @@ public class RSVP {
         //rsvp.setConfirmation_date(new DateTime(DateTimeFormat.forPattern("yyyy-mm-dd'T'hh:mm").parseDateTime(rs.getString("confirmation_date"))));
         rsvp.setConfirmation_date(new DateTime(DateTime.parse(rs.getString("confirmation_date"))));
         rsvp.setComments(rs.getString("comments"));
+        return rsvp;
+    }
+
+    public static RSVP createFromJSON(String json){
+        System.out.println("went into method and json string---->"+ json);
+        RSVP rsvp = new RSVP();
+        JsonReader r = Json.createReader(new StringReader(json));
+        JsonObject o = r.readObject();
+        //System.out.println("integer id = ")
+        //rsvp.setId(o.getInt("id"));
+        rsvp.setName(o.getString("name"));
+        rsvp.setEmail(o.getString("email"));
+        rsvp.setPhone(o.getString("phone"));
+        rsvp.setConfirmation_date(new DateTime(DateTime.parse(o.getString("confirmation_date"))));
+        //rsvp.setConfirmation_date(new DateTime(DateTimeFormat.forPattern("yyyy-mm-dd'T'hh:mm").parseDateTime(o.getString("confirmation_date"))));
+        rsvp.setComments(o.getString("comments"));
         return rsvp;
     }
 

@@ -78,7 +78,8 @@ public class RSVPRestController {
     public ResponseEntity<String> insertUpdateRSVP(@RequestBody String json){
         RSVP rsvp = new RSVP();
 
-        rsvp = rsvp.create(json);
+        System.out.println("JSON String ====>"+json);
+        rsvp = rsvp.createFromJSON(json);
 
         RSVP result = repository.createRsvp(rsvp);
 

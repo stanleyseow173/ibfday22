@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -60,11 +61,19 @@ public class RSVPRepository {
         List<RSVP> rsvps = new ArrayList<RSVP>();
         SqlRowSet rs = jdbcTemplate.queryForRowSet(SELECT_RSVP_BY_EMAIL, email);
         
+        System.out.println("went in here");
         while (rs.next()){
             rsvps.add(RSVP.create(rs));
         }
 
-        return rsvps.get(0);
+        if(rsvps.isEmpty()){
+            System.out.println("went trhough empty");
+            return null;
+        }else{
+            System.out.println("went trhough not empty");
+            return rsvps.get(0);
+
+        }
     }
 
     public RSVP createRsvp(RSVP rsvp){
@@ -94,6 +103,10 @@ public class RSVPRepository {
 
             boolean isUpdated = updateRSVP(existingRSVP);
             
+            if(isUpdated){
+                rsvp.setId(existingRSVP.getId());
+            }
+
         }
         return rsvp;
     }
@@ -102,7 +115,7 @@ public class RSVPRepository {
         return jdbcTemplate.update(UPDATE_RSVP_BY_EMAIL, 
                 existingRSVP.getName(),
                 existingRSVP.getPhone(),
-                existingRSVP.getConfirmation_date().toDateTime().getMillis(), 
-                existingRSVP.getComments())>0;
+                new Timestamp(existingRSVP.getConfirmation_date().getMillis()), 
+                existingRSVP.getComments(),existingRSVP.getEmail())>0;
     }
 }
